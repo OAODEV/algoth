@@ -1,0 +1,13 @@
+*.pyc
+
+# Apple weirdness and such
+.DS_Store
+*.swp
+
+# Working experiment code
+junk_drawer/
+
+# S3krit
+.env
+.env.file
+.env.shsetenv.sh
