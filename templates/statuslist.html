@@ -40,7 +40,7 @@
     <div id='main'>
         <h3>Cut-Rate Status Collector</h3>
         <p>
-            {% for a,b in queue.items() %}
+            {% for a,b in queue.items()|sort %}
             <i class="fa fa-shield fa-rotate-270 {{ b['code']|e }}"></i> <strong>{{ b['nickname']|e }}</strong>: {{ b['status']|e }} - {{ b['at']|e }}<br>
                 {% endfor %}
         </p>

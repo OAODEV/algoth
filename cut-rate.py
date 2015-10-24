@@ -31,7 +31,7 @@ secret = os.getenv('TOKEN')
 
 # API Classes
 # Post to add a status, or get to fetch the entire message queue
-class StatusUp(Resource):
+class StatusMain(Resource):
     def post(self):
         args = parser.parse_args()
         nick = args['nickname']
@@ -58,21 +58,37 @@ class StatusUp(Resource):
         return lst, 201
 
 
-class StatusDown(Resource):
+class StatusNick(Resource):
+    def post(self, nickname):
+        args = parser.parse_args()
+        status = args['status']
+        token = args['token']
+        code = args['code']
+        stamp = str(datetime.now())
+        if token == secret:  # check that token is valid
+            content = {'nickname': nickname,
+                       'status': status,
+                       'code': code,
+                       'at': stamp}
+            QUEUE[nickname] = content
+            with open('/cache/queue.json', 'wt') as fh:
+                json.dump(QUEUE, fh)
+            return QUEUE[nickname], 201
+        else:
+            return 'invalid token', 403
+
     def get(self, nickname):
         try:
-            return QUEUE[nickname]
+            return QUEUE[nickname], 201
         except KeyError:
             no_status = {'nickname': nickname, 'status': 'No such log'}
             return no_status, 201
 
 # Flask-RESTful Endpoint routing
-api.add_resource(StatusUp,
-                 '/',
-                 '/status',
-                 '/post',
-                 '/up')
-api.add_resource(StatusDown,
+api.add_resource(StatusMain,
+                 '/'
+                 )
+api.add_resource(StatusNick,
                  '/<nickname>')
 
 
