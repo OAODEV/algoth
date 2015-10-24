@@ -1,14 +1,16 @@
 # Cut-Rate Status Collector
 
-Simple service to send and retrieve "current status" messages. Keeps only the latest message from a given handle.
+Simple service to send and retrieve "current status" messages. Keeps the single most recent message from a given handle.
 
 ### URL
 
- `/` or `/status` or `/<nickname>`
+`/` or `/<nickname>`
+ 
+HTML of all current statuses at `/view`.
 
 ### Method
 
-  `GET` | `POST` 
+`GET` | `POST` 
   
 
 ### Data Params
@@ -23,8 +25,8 @@ Simple service to send and retrieve "current status" messages. Keeps only the la
 ```
 
 
-* 'nickname' is an arbitrary handle for the service that's sending its status. Should be something you'll recognize later, and brief.
-* 'code' is optional, and determines the color of the display on the UI page
+* 'nickname' is an arbitrary handle for the service that's sending its status. Should be something you'll recognize later, and brief. (Can either post to `/` as part of the data payload, or to `/<nickname>` in which case leave it out of the post.)
+* 'code' is optional, and determines the color of the display on the HTML page
 * 'token' is just a shibboleth used to verify that posts are legit. See TYM for the value.
 
 ### Success Response
@@ -43,3 +45,13 @@ Simple service to send and retrieve "current status" messages. Keeps only the la
 
 **Code:** 403 <br />
 **Content:** `"invalid token"`
+
+### Note:
+
+`POST` to existing nickname changes the code and status values, and updates the timestamp. Any new nickname (assuming a valid token) gets added to the stack.
+
+`GET` from `/` returns all statuses in a JSON array. `GET /<nickname>` returns status of that nick.
+
+`/view` route provides an HTML page with all current statuses.
+
+![view-screenshot](https://dl.dropboxusercontent.com/s/l2ynhntyuk94q4v/view-screen.png?dl=0)
