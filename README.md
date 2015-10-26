@@ -19,14 +19,14 @@ HTML of all current statuses at `/view`.
 {
     "nickname": "example",
     "status": "This is an update message",
-    "code": "ok",
+    "color": "ok",
     "token": "<secret>"
 }
 ```
 
 
 * 'nickname' is an arbitrary handle for the service that's sending its status. Should be something you'll recognize later, and brief. (Can either post to `/` as part of the data payload, or to `/<nickname>` in which case leave it out of the post.)
-* 'code' is optional, and determines the color of the display on the HTML page
+* 'color' is optional, and determines the color of the display on the HTML page. Can be a word like "green" or "red" or `#hexcode`
 * 'token' is just a shibboleth used to verify that posts are legit. See TYM for the value.
 
 ### Success Response
@@ -35,7 +35,7 @@ HTML of all current statuses at `/view`.
 **Content:** `
     {
   "at": "2015-10-24 08:45:19.086997",
-  "code": "info",
+  "color": "grey",
   "nickname": "example",
   "status": "update message"
 }`
@@ -48,7 +48,7 @@ HTML of all current statuses at `/view`.
 
 ### Note:
 
-`POST` to existing nickname changes the code and status values, and updates the timestamp. Any new nickname (assuming a valid token) gets added to the stack.
+`POST` to existing nickname changes the color and status values, and updates the timestamp. Any new nickname (assuming a valid token) gets added to the stack.
 
 `GET` from `/` returns all statuses in a JSON array. `GET /<nickname>` returns status of that nick.
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-from flask import Flask, render_template, make_response
+from flask import Flask, render_template, make_response, request
 from flask_restful import Resource, Api, reqparse
 import json
 import os
@@ -23,7 +23,7 @@ parser = reqparse.RequestParser()
 parser.add_argument('nickname')
 parser.add_argument('status')
 parser.add_argument('token')
-parser.add_argument('code')
+parser.add_argument('color')
 
 # set token value in order to validate posts
 
@@ -31,7 +31,7 @@ secret = os.getenv('TOKEN')
 if not secret:
     with open('/secret/env', 'rt') as s:
         for line in s.readlines():
-            if 'TOKEN' in line:
+            if 'STATUSTOKEN' in line:
                 secret = line.split('=')[1]
 
 
@@ -43,13 +43,14 @@ class StatusMain(Resource):
         nick = args['nickname']
         status = args['status']
         token = args['token']
-        code = args['code']
+        color = args['color']
         stamp = str(datetime.now())
-        if token == secret or not secret:  # check that token is valid
+        if (token == secret) or (secret is None):  # check that token is valid
             content = {'nickname': nick,
                        'status': status,
-                       'code': code,
-                       'at': stamp}
+                       'color': color,
+                       'at': stamp,
+                       'client_ip': request.remote_addr}
             QUEUE[nick] = content
             with open('/cache/queue.json', 'wt') as fh:
                 json.dump(QUEUE, fh)
@@ -61,7 +62,7 @@ class StatusMain(Resource):
         lst = []
         for item in QUEUE.values():
             lst.append(item)
-        return lst, 201
+        return lst, 200
 
 
 class StatusNick(Resource):
@@ -69,26 +70,27 @@ class StatusNick(Resource):
         args = parser.parse_args()
         status = args['status']
         token = args['token']
-        code = args['code']
+        color = args['color']
         stamp = str(datetime.now())
         if token == secret:  # check that token is valid
             content = {'nickname': nickname,
                        'status': status,
-                       'code': code,
-                       'at': stamp}
+                       'color': color,
+                       'at': stamp,
+                       'client_ip': request.remote_addr}
             QUEUE[nickname] = content
             with open('/cache/queue.json', 'wt') as fh:
                 json.dump(QUEUE, fh)
             return QUEUE[nickname], 201
         else:
-            return 'invalid token', 403
+            return 'invalid token! mine:%s yours:%s' % (secret, token), 403
 
     def get(self, nickname):
         try:
             return QUEUE[nickname], 201
         except KeyError:
-            no_status = {'nickname': nickname, 'status': 'No such log'}
-            return no_status, 201
+            no_status = {'nickname': nickname, 'status': 'No such handle'}
+            return no_status, 200
 
     def delete(self, nickname):
         QUEUE.pop(nickname, None)
