@@ -26,7 +26,13 @@ parser.add_argument('token')
 parser.add_argument('code')
 
 # set token value in order to validate posts
+
 secret = os.getenv('TOKEN')
+if not secret:
+    with open('/secret/env', 'rt') as s:
+        for line in s.readlines():
+            if 'TOKEN' in line:
+                secret = line.split('=')[1]
 
 
 # API Classes
@@ -39,7 +45,7 @@ class StatusMain(Resource):
         token = args['token']
         code = args['code']
         stamp = str(datetime.now())
-        if token == secret:  # check that token is valid
+        if token == secret or not secret:  # check that token is valid
             content = {'nickname': nick,
                        'status': status,
                        'code': code,
@@ -83,6 +89,12 @@ class StatusNick(Resource):
         except KeyError:
             no_status = {'nickname': nickname, 'status': 'No such log'}
             return no_status, 201
+
+    def delete(self, nickname):
+        QUEUE.pop(nickname, None)
+        with open('/cache/queue.json', 'wt') as fh:
+            json.dump(QUEUE, fh)
+        return '', 204
 
 # Flask-RESTful Endpoint routing
 api.add_resource(StatusMain,

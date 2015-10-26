@@ -7,32 +7,42 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-    body {
-        background-color: #efeeed;
-
-    }
-
-    h3 {
-        color: #1c84c6;
-    }
-    
-    #main {
-        width: 67%;
-        font: 150% 'Lato';
-        font-size: 1.5em;
-        line-height: 1.75em;
-        color: #373737;
-        margin: 24px auto;
-    } 
-    
-    .fa {
-        color: grey;
-    }
-    
-    .ok { color: green; }
-    .warn { color: yellow; }
-    .error { color: red; }
-    .down { color: black; }
+        body {
+            background-color: #efeeed;
+        }
+        
+        h3 {
+            color: #1c84c6;
+        }
+        
+        #main {
+            width: 67%;
+            font: 150% 'Lato';
+            font-size: 1.5em;
+            line-height: 1.75em;
+            color: #373737;
+            margin: 24px auto;
+        }
+        
+        .fa {
+            color: grey;
+        }
+        
+        .ok {
+            color: green;
+        }
+        
+        .warn {
+            color: yellow;
+        }
+        
+        .error {
+            color: red;
+        }
+        
+        .down {
+            color: black;
+        }
     </style>
 </head>
 
@@ -41,8 +51,9 @@
         <h3>Cut-Rate Status Collector</h3>
         <p>
             {% for a,b in queue.items()|sort %}
-            <i class="fa fa-shield fa-rotate-270 {{ b['code']|e }}"></i> <strong>{{ b['nickname']|e }}</strong>: {{ b['status']|e }} - {{ b['at']|e }}<br>
-                {% endfor %}
+            <i class="fa fa-shield fa-rotate-270 {{ b['code']|e }}"></i>
+            <strong>{{ b['nickname']|e }}</strong>: {{ b['status']|e }} - {{ b['at']|e }}
+            <br> {% endfor %}
         </p>
     </div>
 </body>
