@@ -10,7 +10,9 @@ HTML of all current statuses at `/view`.
 
 ### Method
 
-`GET` | `POST` 
+`GET` | `POST` | `DELETE`
+
+`DELETE` at `/<nickname>` endpoint only.
   
 
 ### Data Params
@@ -19,7 +21,7 @@ HTML of all current statuses at `/view`.
 {
     "nickname": "example",
     "status": "This is an update message",
-    "color": "ok",
+    "color": "green",
     "token": "<secret>"
 }
 ```
@@ -35,7 +37,7 @@ HTML of all current statuses at `/view`.
 **Content:** `
     {
   "at": "2015-10-24 08:45:19.086997",
-  "color": "grey",
+  "color": "green",
   "nickname": "example",
   "status": "update message"
 }`
