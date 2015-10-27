@@ -19,29 +19,18 @@
             width: 67%;
             font: 150% 'Lato';
             font-size: 1.5em;
-            line-height: 1.75em;
+            line-height: 1.2em;
             color: #373737;
             margin: 24px auto;
         }
         
+        small {
+            font-size: 0.67em;
+            color: #999 !important;
+        }
+        
         .fa {
             color: grey;
-        }
-        
-        .ok {
-            color: green;
-        }
-        
-        .warn {
-            color: yellow;
-        }
-        
-        .error {
-            color: red;
-        }
-        
-        .down {
-            color: black;
         }
     </style>
 </head>
@@ -51,9 +40,11 @@
         <h3>Cut-Rate Status Collector</h3>
         <p>
             {% for a,b in queue.items()|sort %}
-            <i class="fa fa-shield fa-rotate-270 {{ b['code']|e }}"></i>
-            <strong>{{ b['nickname']|e }}</strong>: {{ b['status']|e }} - {{ b['at']|e }}
-            <br> {% endfor %}
+            <p><i class="fa fa-shield fa-rotate-270" 
+               style="color: {{ b['color']|e }};"></i> &nbsp; 
+            <strong>{{ b['nickname']|e }}</strong>: &nbsp; {{ b['status']|e }}
+            <br><small>[{{ b['at']|e }} | {{ b['client_ip']|e }}]</small>
+        </p> {% endfor %}
         </p>
     </div>
 </body>
