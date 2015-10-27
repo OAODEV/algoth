@@ -56,4 +56,4 @@ HTML of all current statuses at `/view`.
 
 `/view` route provides an HTML page with all current statuses.
 
-![view-screenshot](https://dl.dropboxusercontent.com/s/l2ynhntyuk94q4v/view-screen.png?dl=0)
+![view-screenshot](https://dl.dropboxusercontent.com/s/dx7otoyibhb6wcv/Screen%20Shot%202015-10-27%20at%2014.47.06.png?dl=0)
