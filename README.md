@@ -1,6 +1,6 @@
-# Cut-Rate Status Collector
+# Algoth
 
-Simple service to send and retrieve "current status" messages. Keeps the single most recent message from a given handle.
+Algoth is simple service to send and retrieve "current status" messages. Keeps the single most recent message from a given handle.
 
 ### URL
 
