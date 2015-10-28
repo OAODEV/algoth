@@ -1,11 +1,18 @@
 <html>
 
 <head>
-    <title> Cut-Rate Status Collector </title>
+    <title> ALGOTH </title>
     <link href='https://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/JavaScript">
+    function RefreshPage(Period) 
+    {
+        setTimeout("location.reload(true);", Period);
+    }
+    </script>
+
     <style>
         body {
             background-color: #efeeed;
@@ -35,9 +42,12 @@
     </style>
 </head>
 
-<body>
+<body onload="javaScript:RefreshPage(60000);">
     <div id='main'>
-        <h3>Cut-Rate Status Collector</h3>
+        <img src="http://asset-tym.s3.amazonaws.com/monitor-array.png">
+        <h3>Algoth</h3>
+        <p><small>{{ dt }}</small></p>
+
         <p>
             {% for a,b in queue.items()|sort %}
             <p><i class="fa fa-shield fa-rotate-270" 
