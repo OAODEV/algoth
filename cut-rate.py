@@ -110,7 +110,8 @@ api.add_resource(StatusNick,
 # Log monitor page
 @app.route('/view')
 def index():
-    freight = render_template('statuslist.html', queue=QUEUE)
+    stamp = str(datetime.now())
+    freight = render_template('statuslist.html', queue=QUEUE, dt=stamp)
     v = make_response(freight)
     return v
 
