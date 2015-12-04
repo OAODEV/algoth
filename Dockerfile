@@ -2,8 +2,7 @@ FROM alpine:latest
 MAINTAINER yagermadden@gmail.com
 
 RUN apk update && apk add \
-    python3 \
-    python3-dev
+    python3
 
 RUN mkdir /app
 WORKDIR /app
