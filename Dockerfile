@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM alpine:edge
 MAINTAINER yagermadden@gmail.com
 
 RUN apk update && apk add \
@@ -9,7 +9,7 @@ WORKDIR /app
 VOLUME /cache
 
 ADD requirements.txt /app/
-RUN pip3 install -r requirements.txt
+RUN pip3 install -U pip && pip install -r requirements.txt
 
 RUN rm -rf /var/cache/apk/* \
     && rm -rf /tmp/*
