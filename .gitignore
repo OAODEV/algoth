@@ -10,4 +10,5 @@ junk_drawer/
 # S3krit
 .env
 .env.file
-.env.shsetenv.sh
+.env.sh
+setenv.sh
