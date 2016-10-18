@@ -14,11 +14,8 @@ machine:
 
 dependencies:
   override:
-    - echo "The build name is in here!!!" r.iadops.com/$herd_service_name:$herd_build_tag
-    - docker login --username circleci --password $registry_password --email fake@fake.co r.iadops.com
-    - docker info
-    - docker build -t r.iadops.com/$herd_service_name:$herd_build_tag .
-    - docker tag -f r.iadops.com/$herd_service_name:$herd_build_tag us.gcr.io/lexical-cider-93918/$herd_service_name:$herd_build_tag
+    - echo "The build name is in here!!!" us.gcr.io/lexical-cider-93918/$herd_service_name:$herd_build_tag
+    - docker build -t us.gcr.io/lexical-cider-93918/$herd_service_name:$herd_build_tag .
     - if [ ! -d ~/google-cloud-sdk ]; then curl https://sdk.cloud.google.com | bash; fi
     - ~/google-cloud-sdk/bin/gcloud components update preview
   cache_directories:
@@ -26,12 +23,11 @@ dependencies:
 
 test:
   override:
-    - docker run r.iadops.com/$herd_service_name:$herd_build_tag $herd_unittest_cmd
+    - docker run us.gcr.io/lexical-cider-93918/$herd_service_name:$herd_build_tag $herd_unittest_cmd
 
 deployment:
   index:
     branch: /.*/
     commands:
-      - docker push r.iadops.com/$herd_service_name:$herd_build_tag
       - echo $gcloud_key | base64 --decode > gcloud.json; gcloud auth activate-service-account $gcloud_email --key-file gcloud.json; ssh-keygen -f ~/.ssh/google_compute_engine -N ""
       - gcloud docker push us.gcr.io/lexical-cider-93918/$herd_service_name:$herd_build_tag

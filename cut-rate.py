@@ -111,9 +111,41 @@ api.add_resource(StatusNick,
 @app.route('/view')
 def index():
     stamp = str(datetime.now())
-    freight = render_template('statuslist.html', queue=QUEUE, dt=stamp)
+    freight = render_template('statuslist.html',
+                              queue=QUEUE,
+                              dt=stamp)
     v = make_response(freight)
     return v
+
+
+# view only one nickname status
+@app.route('/<nickname>/view')
+def nick_view(nickname):
+    stamp = str(datetime.now())
+    nickname_queue = QUEUE.get(nickname, None)
+    freight = render_template('filtered_status.html',
+                              queue=nickname_queue,
+                              dt=stamp,
+                              nickname=nickname)
+    v = make_response(freight)
+    return v
+
+
+# view only one color status
+@app.route('/<color>/view')
+def color_view(color):
+    stamp = str(datetime.now())
+    color_queue = dict()
+    for alias, content in QUEUE.items():
+        if content['color'] == color:
+            color_queue[alias] = content
+    freight = render_template('filtered_status.html',
+                              queue=color_queue,
+                              dt=stamp,
+                              nickname=color)
+    v = make_response(freight)
+    return v
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5001)
