@@ -50,9 +50,9 @@
 
         <p>
             {% for a,b in queue.items()|sort %}
-            <p><a href="../{{ b['color']|e }}/view"><i class="fa fa-shield fa-rotate-270"
+            <p><a href="/view/c/{{ b['color'].strip('#')|e }}"><i class="fa fa-shield fa-rotate-270"
                style="color: {{ b['color']|e }};"></i></a> &nbsp;
-            <a href="../{{ b['nickname']|e}}/view"><strong>{{ b['nickname']|e }}</strong></a>: &nbsp; {{ b['status']|e }}
+            <a href="/view/n/{{ b['nickname']|e}}"><strong>{{ b['nickname']|e }}</strong></a>: &nbsp; {{ b['status']|e }}
             <br><small>[{{ b['at']|e }} | {{ b['client_ip']|e }}]</small>
         </p> {% endfor %}
         </p>
