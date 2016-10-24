@@ -5,7 +5,7 @@ Algoth is simple service to send and retrieve "current status" messages. Keeps t
 ### URL
 
 `/` or `/<nickname>`
- 
+
 HTML of all current statuses at `/view`.
 
 ### Method
@@ -13,11 +13,11 @@ HTML of all current statuses at `/view`.
 `GET` | `POST` | `DELETE`
 
 `DELETE` at `/<nickname>` endpoint only.
-  
+
 
 ### Data Params
 
-``` 
+```
 {
     "nickname": "example",
     "status": "This is an update message",
@@ -29,7 +29,7 @@ HTML of all current statuses at `/view`.
 
 * 'nickname' is an arbitrary handle for the service that's sending its status. Should be something you'll recognize later, and brief. (Can either post to `/` as part of the data payload, or to `/<nickname>` in which case leave it out of the post.)
 * 'color' is optional, and determines the color of the display on the HTML page. Can be a word like "green" or "red" or `#hexcode`
-* 'token' is just a shibboleth used to verify that posts are legit. See TYM for the value.
+* 'token' is just a shibboleth used to verify that posts are legit. Set the environment variable TOKEN to what you would like it to be.
 
 ### Success Response
 
@@ -42,7 +42,7 @@ HTML of all current statuses at `/view`.
   "status": "update message"
 }`
 
- 
+
 ### Error Response:
 
 **Code:** 403 <br />
