@@ -8,6 +8,8 @@ Algoth is simple service to send and retrieve "current status" messages. Keeps t
 
 HTML of all current statuses at `/view`.
 
+A new view for each status that is posted will be generated at `/view/c/{color}` for the color of the posted status and `/view/n/{name}` for its nickname.
+
 ### Method
 
 `GET` | `POST` | `DELETE`
