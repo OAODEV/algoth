@@ -22,6 +22,15 @@
             color: #1c84c6;
         }
 
+        a {
+          text-decoration: none;
+          color: #000000;
+        }
+
+        a:hover{
+          text-decoration: underline;
+        }
+
         #main {
             width: 67%;
             font: 150% 'Lato';
@@ -45,7 +54,7 @@
 <body onload="javaScript:RefreshPage(60000);">
     <div id='main'>
         <img src="http://asset-tym.s3.amazonaws.com/monitor-array.png">
-        <h3><a href='/view'>Algoth - {{nick}} View</a></h3>
+        <h3><a href='/view' style="color: #1c84c6;">Algoth - {{nick}} View</a></h3>
         <p><small>{{ dt }}</small></p>
 
         <p>
