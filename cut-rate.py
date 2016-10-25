@@ -83,7 +83,7 @@ class StatusNick(Resource):
                 json.dump(QUEUE, fh)
             return QUEUE[nickname], 201
         else:
-            return 'invalid token! mine:%s yours:%s' % (secret, token), 403
+            return 'invalid token! yours:{}'.format(token), 403
 
     def get(self, nickname):
         try:
@@ -111,9 +111,42 @@ api.add_resource(StatusNick,
 @app.route('/view')
 def index():
     stamp = str(datetime.now())
-    freight = render_template('statuslist.html', queue=QUEUE, dt=stamp)
+    freight = render_template('statuslist.html',
+                              queue=QUEUE,
+                              dt=stamp)
     v = make_response(freight)
     return v
+
+
+# view only one nickname status
+@app.route('/view/n/<nickname>')
+def nick_view(nickname):
+    stamp = str(datetime.now())
+    nickname_queue = {}
+    nickname_queue[nickname] = QUEUE[nickname]
+    freight = render_template('filtered_status.html',
+                              queue=nickname_queue,
+                              dt=stamp,
+                              nick=nickname)
+    v = make_response(freight)
+    return v
+
+
+# view only one color status
+@app.route('/view/c/<color>')
+def color_view(color):
+    stamp = str(datetime.now())
+    color_queue = {}
+    for alias, content in QUEUE.items():
+        if color in content['color']:
+            color_queue[alias] = content
+    freight = render_template('filtered_status.html',
+                              queue=color_queue,
+                              dt=stamp,
+                              nick=color)
+    v = make_response(freight)
+    return v
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5001)
