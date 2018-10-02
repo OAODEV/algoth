@@ -12,13 +12,15 @@ app = Flask(__name__)
 api = Api(app)
 
 # Load JSON message store if available
-# (saved to a volume, preserves status across restarts)
+# (saved to a disk volume, preserves status across restarts)
 try:
     QUEUE = json.load(open('/cache/queue.json', 'rt'))
 except (ValueError, FileNotFoundError):
     QUEUE = {}
 
 # Flask-RESTful reqparse boilerplate
+# TODO: `reqparse` is deprecated
+# Use marshmallow or something here instead
 parser = reqparse.RequestParser()
 parser.add_argument('nickname')
 parser.add_argument('status')
@@ -97,6 +99,7 @@ class StatusNick(Resource):
         with open('/cache/queue.json', 'wt') as fh:
             json.dump(QUEUE, fh)
         return '', 204
+
 
 # Flask-RESTful Endpoint routing
 api.add_resource(StatusMain,
