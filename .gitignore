@@ -1,5 +1,5 @@
 *.pyc
-
+cache*
 # Apple weirdness and such
 .DS_Store
 *.swp
