@@ -1,108 +1,71 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-from flask import Flask, render_template, make_response, request
-from flask_restful import Resource, Api, reqparse
 import json
 import os
 from datetime import datetime
 
-# Instantiate app
-app = Flask(__name__)
-api = Api(app)
+from dotenv import load_dotenv
+from flask import Flask, jsonify, make_response, render_template, request, url_for
 
+load_dotenv()
+
+# set token value in order to validate posts
+SECRET = os.getenv("TOKEN")
+QUEUE_PATH = os.getenv("QUEUE_PATH", "cache/queue.json")
 # Load JSON message store if available
 # (saved to a disk volume, preserves status across restarts)
 try:
-    QUEUE = json.load(open("/cache/queue.json", "rt"))
+    QUEUE = json.load(open(QUEUE_PATH, "r"))
 except (ValueError, FileNotFoundError):
     QUEUE = {}
 
-# Flask-RESTful reqparse boilerplate
-# TODO: `reqparse` is deprecated
-# Use marshmallow or something here instead
-parser = reqparse.RequestParser()
-parser.add_argument("nickname")
-parser.add_argument("status")
-parser.add_argument("token")
-parser.add_argument("color")
-
-# set token value in order to validate posts
-
-secret = os.getenv("TOKEN")
+# Instantiate app
+app = Flask(__name__)
 
 
-# API Classes
-# Post to add a status, or get to fetch the entire message queue
-class StatusMain(Resource):
-    def post(self):
-        args = parser.parse_args()
-        nick = args["nickname"]
+@app.route("/", methods=["GET", "POST"], defaults={"handle": None})
+@app.route("/<handle>", methods=["GET", "POST", "DELETE"])
+def api_endpoint(handle):
+    if request.method == "POST":
+        args = request.get_json()
+        if not handle:
+            handle = args["handle"]
         status = args["status"]
         token = args["token"]
         color = args["color"]
         stamp = str(datetime.now())
-        if (token == secret) or (secret is None):  # check that token is valid
+        if (token == SECRET) or (SECRET is None):  # check that token is valid
             content = {
-                "nickname": nick,
+                "link": url_for("api_request", handle=handle),
+                "handle": handle,
                 "status": status,
                 "color": color,
                 "at": stamp,
                 "client_ip": request.remote_addr,
             }
-            QUEUE[nick] = content
-            with open("/cache/queue.json", "wt") as fh:
+            QUEUE[handle] = content
+            with open(QUEUE_PATH, "w") as fh:
                 json.dump(QUEUE, fh)
-            return QUEUE, 201
+            return jsonify(QUEUE[handle]), 201
         else:
             return "invalid token", 403
 
-    def get(self):
-        lst = []
-        for item in QUEUE.values():
-            lst.append(item)
-        return lst, 200
-
-
-class StatusNick(Resource):
-    def post(self, nickname):
-        args = parser.parse_args()
-        status = args["status"]
-        token = args["token"]
-        color = args["color"]
-        stamp = str(datetime.now())
-        if token == secret:  # check that token is valid
-            content = {
-                "nickname": nickname,
-                "status": status,
-                "color": color,
-                "at": stamp,
-                "client_ip": request.remote_addr,
-            }
-            QUEUE[nickname] = content
-            with open("/cache/queue.json", "wt") as fh:
-                json.dump(QUEUE, fh)
-            return QUEUE[nickname], 201
-        else:
-            return "invalid token! yours:{}".format(token), 403
-
-    def get(self, nickname):
+    if request.method == "GET":
+        if not handle:
+            lst = [item for item in QUEUE.values()]
+            return jsonify(lst)
         try:
-            return QUEUE[nickname], 201
+            return jsonify(QUEUE[handle]), 201
         except KeyError:
-            no_status = {"nickname": nickname, "status": "No such handle"}
-            return no_status, 200
+            no_status = {"handle": handle, "status": "No such handle"}
+            return jsonify(no_status), 404
 
-    def delete(self, nickname):
-        QUEUE.pop(nickname, None)
-        with open("/cache/queue.json", "wt") as fh:
+    if request.method == "DELETE":
+        QUEUE.pop(handle, None)
+        with open(QUEUE_PATH, "w") as fh:
             json.dump(QUEUE, fh)
-        return "", 204
-
-
-# Flask-RESTful Endpoint routing
-api.add_resource(StatusMain, "/")
-api.add_resource(StatusNick, "/<nickname>")
+        return jsonify({handle: "Deleted"}), 204
 
 
 # Little web UI
@@ -115,14 +78,14 @@ def index():
     return v
 
 
-# view only one nickname status
-@app.route("/view/n/<nickname>")
-def nick_view(nickname):
+# view only one handle status
+@app.route("/view/n/<handle>")
+def nick_view(handle):
     stamp = str(datetime.now())
-    nickname_queue = {}
-    nickname_queue[nickname] = QUEUE[nickname]
+    handle_queue = {}
+    handle_queue[handle] = QUEUE[handle]
     freight = render_template(
-        "filtered_status.html", queue=nickname_queue, dt=stamp, nick=nickname
+        "filtered_status.html", queue=handle_queue, dt=stamp, handle=handle
     )
     v = make_response(freight)
     return v
@@ -137,7 +100,7 @@ def color_view(color):
         if color in content["color"]:
             color_queue[alias] = content
     freight = render_template(
-        "filtered_status.html", queue=color_queue, dt=stamp, nick=color
+        "filtered_status.html", queue=color_queue, dt=stamp, handle=color
     )
     v = make_response(freight)
     return v
