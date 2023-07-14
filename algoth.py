@@ -37,7 +37,7 @@ def api_endpoint(handle):
         stamp = str(datetime.now())
         if (token == SECRET) or (SECRET is None):  # check that token is valid
             content = {
-                "link": url_for("api_request", handle=handle),
+                "link": url_for("api_endpoint", handle=handle),
                 "handle": handle,
                 "status": status,
                 "color": color,
