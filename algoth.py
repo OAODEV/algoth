@@ -68,7 +68,7 @@ def api_endpoint(handle):
         return jsonify({handle: "Deleted"}), 204
 
 
-# Little web UI
+# HTML frontend
 # Log monitor page
 @app.route("/view")
 def index():

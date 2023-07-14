@@ -12,3 +12,4 @@ junk_drawer/
 .env.file
 .env.sh
 setenv.sh
+.vscode
